@@ -24,7 +24,7 @@ global with sharing class sdgDataProviderNative implements sdgIDataProvider {
         sdgSecurity.CanQuery('sdgDataProviderNative:GetSDGActions' , 'SDG_Action__c', 'event__c, action_order__c, Requires_Createable__c, requires_deletable__c, Requires_Editable__c, Action_Type__c, Event_Payload__c, Icon__c', 'id,name', sdgNamespaceUtility.GetNamespace(), true);
         sdgSecurity.CanQuery('sdgDataProviderNative:GetSDGFields', 'SDG_Field__c', 'apiname__c,  FieldOrder__c, Field_Style__c, Hide_Filter__c, Override_Label__c', 'id,name', sdgNamespaceUtility.GetNamespace(), true);
         
-        List<SDG__c> sdgs= [select id, sobjectname__c, parent_field_name__c, filter__c, default_sort__c, is_valid__c, All_Rows__c, DisableSharing__c, (select id, name, event__c, Requires_Createable__c, Requires_Editable__c, requires_deletable__c, Action_Type__c, Event_Payload__c, Icon__c, action_order__c  from sdg_actions__r), (select id, name, apiname__c,  FieldOrder__c, Field_Style__c, Hide_Filter__c, Override_Label__c  from SDGFields__r where is_valid_field__c =true) from SDG__c where SDG_Tag__c = :SDGTag ];
+        List<SDG__c> sdgs= [select id, sobjectname__c, parent_field_name__c, filter__c, default_sort__c, is_valid__c, All_Rows__c, DisableSharing__c, SOQL_Query__c, (select id, name, event__c, Requires_Createable__c, Requires_Editable__c, requires_deletable__c, Action_Type__c, Event_Payload__c, Icon__c, action_order__c  from sdg_actions__r), (select id, name, apiname__c,  FieldOrder__c, Field_Style__c, Hide_Filter__c, Override_Label__c  from SDGFields__r where is_valid_field__c =true) from SDG__c where SDG_Tag__c = :SDGTag ];
         if (sdgs.size()!=1)
         {
             throw new SDGException('sdgDataProviderNative:LoadSDG: Invalid number of SDG results for name: ' + SDGTag + '. retrieved: ' + sdgs.size());
@@ -43,6 +43,7 @@ global with sharing class sdgDataProviderNative implements sdgIDataProvider {
             }
             
             CoreSDG = new SDG(e.sObjectName__c, e.Parent_Field_Name__c,  e.sobjectname__c,  e.Filter__c,  e.Default_Sort__c, e.Id, e.All_Rows__c );
+            CoreSDG.soqlQuery = e.SOQL_Query__c;
             CoreSDG.internalData.DisableSharing = e.DisableSharing__c;
 
             Schema.SObjectType targetType = Schema.getGlobalDescribe().get(CoreSDG.sObjectName);

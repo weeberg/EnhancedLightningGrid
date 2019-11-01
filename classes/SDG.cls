@@ -11,6 +11,9 @@ global with sharing class SDG
     global List<SDGAction> SDGActions;
     global List<SDGField> SDGFields;
 
+    // Added by DevCore
+    global String soqlQuery;
+
     global SDG()
     {
         throw new sdgDeprecatedException('SDG requires a parameterized constructor');
@@ -22,7 +25,12 @@ global with sharing class SDG
         eInternal.sUniqueKey = sUniqueKey;
         this.internalData = einternal;
     }
+    // Added by DevCore
     global SDG(String objectname, String ParentFieldName, String sObjectName, String sFilter, String sDefaultSort, String sUniqueKey)
+    {
+        this(objectname, ParentFieldName, sObjectName, sFilter, sDefaultSort, sUniqueKey, '');
+    }
+    global SDG(String objectname, String ParentFieldName, String sObjectName, String sFilter, String sDefaultSort, String sUniqueKey, String soqlQuery)
     {
         this.sObjectName = objectName;
 

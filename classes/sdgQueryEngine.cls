@@ -196,6 +196,7 @@ public with sharing class sdgQueryEngine {
                 }
 
                 pageQuery = pageQuery +  sSortClause + sPagination + AllRows;
+
                 system.debug('getSDGResultRaw:pageQuery: ' + pageQuery);
             }
             catch (Exception ex)
@@ -214,6 +215,13 @@ public with sharing class sdgQueryEngine {
 
                 result.FullQueryCount =countFull;
                 result.pagecount = (integer) math.ceil(countFull/internalPageSize);
+
+                // Added by DevCore
+                if (!String.isBlank(newSDG.soqlQuery)) {
+                    pageQuery = newSDG.soqlQuery;
+                    String shortParentRecordId = request.ParentRecordID.length() > 15 ? request.ParentRecordID.left(15) : request.ParentRecordID;
+                    pageQuery = pageQuery.replace('##parentrecordid##', shortParentRecordId);
+                }
 
                 result.data = sdgDatabase.Query(pageQuery, DisableSharing);
                 system.debug('Query complete - pagesize: ' + result.data.size());

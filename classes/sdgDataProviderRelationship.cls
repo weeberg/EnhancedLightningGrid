@@ -20,7 +20,12 @@ global with sharing class sdgDataProviderRelationship implements sdgIDataProvide
         throw new SDGException('Branching logic incorrect in sdgDataProviderRelationship');
 
     }
+    // Added by DevCore
     global   SDG LoadSDG(String ParentRecordID, String RelationshipName, String FieldSetName)
+    {
+        return LoadSDG(ParentRecordID, RelationshipName, FieldSetName, '');
+    }
+    global   SDG LoadSDG(String ParentRecordID, String RelationshipName, String FieldSetName, String soqlQuery)
     {
 
         ID objId ;
@@ -72,7 +77,7 @@ global with sharing class sdgDataProviderRelationship implements sdgIDataProvide
         {
             throw new SDGException('sdgDataProviderRelationship: Unable to get the Relationship details.  Valid values for RelationshipName for this record are: ' + String.join(RelationshipNames,', '));
         }
-        SDG e = new  SDG( sObjectTypeChild.getDescribe().Name, ParentFieldObj.getDescribe().Name,  sObjectTypeChild.getDescribe().Name, '', '', sdgDataProviderType.Relationship.name() + ':' + Relationshipname + ':' + FieldSetName, false);
+        SDG e = new  SDG( sObjectTypeChild.getDescribe().Name, ParentFieldObj.getDescribe().Name,  sObjectTypeChild.getDescribe().Name, '', '', sdgDataProviderType.Relationship.name() + ':' + Relationshipname + ':' + FieldSetName, soqlQuery);
 
         fsMap = sObjectTypeChild.getDescribe().FieldSets.getMap();
         for (string key : fsMap.keySet()) {
